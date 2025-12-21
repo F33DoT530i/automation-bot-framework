@@ -7,7 +7,7 @@ import json
 import os
 import platform
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Any, List, Optional
 import pyautogui
 
@@ -35,7 +35,7 @@ class InteractionRecorder:
 
     def start_session(self):
         """Start a new recording session."""
-        self.start_time = datetime.utcnow()
+        self.start_time = datetime.now(timezone.utc)
         self.interactions = []
 
     def record_interaction(self, interaction: Dict[str, Any]):
@@ -54,7 +54,7 @@ class InteractionRecorder:
         Returns:
             Path to the saved recording file
         """
-        end_time = datetime.utcnow()
+        end_time = datetime.now(timezone.utc)
         
         # Get system metadata
         screen_size = pyautogui.size()
@@ -124,7 +124,7 @@ class InteractionRecorder:
         # Calculate duration
         duration = 0
         if self.start_time:
-            duration = (datetime.utcnow() - self.start_time).total_seconds()
+            duration = (datetime.now(timezone.utc) - self.start_time).total_seconds()
 
         return {
             "total_interactions": len(self.interactions),

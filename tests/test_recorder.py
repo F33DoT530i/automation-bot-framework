@@ -7,7 +7,7 @@ import os
 import json
 import tempfile
 import shutil
-from datetime import datetime
+from datetime import datetime, timezone
 from automation_bot.recording import InteractionRecorder
 
 
@@ -47,7 +47,7 @@ def test_record_interaction(recorder):
     recorder.start_session()
     
     interaction = {
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "type": "mouse_click",
         "data": {"x": 100, "y": 200, "button": "left"}
     }
@@ -64,7 +64,7 @@ def test_end_session(recorder, temp_dir):
     # Record some interactions
     for i in range(5):
         interaction = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             "type": "mouse_move",
             "data": {"x": i * 10, "y": i * 20}
         }
@@ -92,7 +92,7 @@ def test_load_recording(recorder, temp_dir):
     # Create and save a recording
     recorder.start_session()
     recorder.record_interaction({
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "type": "key_press",
         "data": {"key": "a"}
     })
@@ -120,10 +120,10 @@ def test_get_statistics_with_data(recorder):
     
     # Record different types of interactions
     interactions = [
-        {"timestamp": datetime.utcnow().isoformat() + "Z", "type": "mouse_move", "data": {}},
-        {"timestamp": datetime.utcnow().isoformat() + "Z", "type": "mouse_click", "data": {}},
-        {"timestamp": datetime.utcnow().isoformat() + "Z", "type": "mouse_move", "data": {}},
-        {"timestamp": datetime.utcnow().isoformat() + "Z", "type": "key_press", "data": {}},
+        {"timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"), "type": "mouse_move", "data": {}},
+        {"timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"), "type": "mouse_click", "data": {}},
+        {"timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"), "type": "mouse_move", "data": {}},
+        {"timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"), "type": "key_press", "data": {}},
     ]
     
     for interaction in interactions:
@@ -146,7 +146,7 @@ def test_list_recordings(temp_dir):
         recorder = InteractionRecorder(output_dir=temp_dir)
         recorder.start_session()
         recorder.record_interaction({
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             "type": "mouse_click",
             "data": {}
         })
@@ -165,7 +165,7 @@ def test_metadata_in_recording(recorder, temp_dir):
     """Test that metadata is correctly saved in recordings."""
     recorder.start_session()
     recorder.record_interaction({
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "type": "mouse_click",
         "data": {}
     })

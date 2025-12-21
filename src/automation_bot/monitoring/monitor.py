@@ -5,7 +5,7 @@ Tracks mouse movements, clicks, keyboard input, and application context.
 
 import platform
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Any, Optional, Callable
 from pynput import mouse, keyboard
 import psutil
@@ -105,7 +105,7 @@ class InteractionMonitor:
             return
 
         interaction = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             "type": "mouse_move",
             "data": {
                 "x": x,
@@ -125,7 +125,7 @@ class InteractionMonitor:
         button_name = button.name if hasattr(button, 'name') else str(button)
         
         interaction = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             "type": "mouse_click",
             "data": {
                 "x": x,
@@ -145,7 +145,7 @@ class InteractionMonitor:
             return
 
         interaction = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             "type": "mouse_scroll",
             "data": {
                 "x": x,
@@ -174,7 +174,7 @@ class InteractionMonitor:
         is_sensitive = self._is_sensitive_context()
 
         interaction = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             "type": "key_press",
             "data": {
                 "key": "***" if (is_sensitive and self.anonymize_keys) else key_str,
@@ -199,7 +199,7 @@ class InteractionMonitor:
             self._current_modifiers.remove(key_str)
 
         interaction = {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             "type": "key_release",
             "data": {
                 "key": key_str,

@@ -6,7 +6,7 @@ import pytest
 import tempfile
 import shutil
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from automation_bot.monitoring import InteractionMonitor
 from automation_bot.recording import InteractionRecorder
 from automation_bot.playback import InteractionPlayer
@@ -41,13 +41,13 @@ def test_record_and_playback_workflow(temp_workspace):
     # For testing, we'll add them manually
     test_interactions = [
         {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             "type": "mouse_move",
             "data": {"x": 100, "y": 100},
             "context": {}
         },
         {
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             "type": "mouse_click",
             "data": {"x": 100, "y": 100, "button": "left", "pressed": True},
             "context": {}
@@ -89,7 +89,7 @@ def test_full_ml_pipeline(temp_workspace):
         # Add interactions with patterns
         for i in range(10):
             recorder.record_interaction({
-                "timestamp": datetime.utcnow().isoformat() + "Z",
+                "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
                 "type": "mouse_move" if i % 2 == 0 else "mouse_click",
                 "data": {"x": i * 10, "y": i * 20},
                 "context": {"active_app": f"app_{session_num}"}
@@ -133,7 +133,7 @@ def test_anonymization_workflow(temp_workspace):
     
     # Add sensitive interaction
     recorder.record_interaction({
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "type": "key_press",
         "data": {
             "key": "***",  # Anonymized
@@ -160,7 +160,7 @@ def test_selective_playback(temp_workspace):
     interaction_types = ["mouse_move", "mouse_click", "key_press", "mouse_move", "key_press"]
     for int_type in interaction_types:
         recorder.record_interaction({
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             "type": int_type,
             "data": {"x": 100, "y": 100} if "mouse" in int_type else {"key": "a"},
             "context": {}

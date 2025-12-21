@@ -43,7 +43,13 @@ class BehaviorPredictor:
         Returns:
             Feature matrix as numpy array
         """
+        from datetime import datetime
+        
         features = []
+        # Build app encoder for consistent encoding
+        all_apps = [inter.get("context", {}).get("active_app", "") for inter in interactions]
+        unique_apps = list(set(all_apps))
+        app_to_idx = {app: idx for idx, app in enumerate(unique_apps)}
 
         for i, interaction in enumerate(interactions):
             feature_vector = []
@@ -65,17 +71,22 @@ class BehaviorPredictor:
             feature_vector.append(data.get("x", 0))
             feature_vector.append(data.get("y", 0))
 
-            # Time-based features
+            # Time-based features - calculate actual time delta
             if i > 0:
-                # Time delta from previous interaction
-                feature_vector.append(1)  # Simplified - should calculate actual delta
+                try:
+                    current_time = datetime.fromisoformat(interaction.get("timestamp", "").replace("Z", "+00:00"))
+                    prev_time = datetime.fromisoformat(interactions[i-1].get("timestamp", "").replace("Z", "+00:00"))
+                    time_delta = (current_time - prev_time).total_seconds()
+                    feature_vector.append(time_delta)
+                except (ValueError, AttributeError):
+                    feature_vector.append(0)
             else:
                 feature_vector.append(0)
 
-            # Context features
+            # Context features - use proper categorical encoding
             context = interaction.get("context", {})
-            # Simplified app encoding - in production, use proper encoding
-            feature_vector.append(hash(context.get("active_app", "")) % 1000)
+            app_name = context.get("active_app", "")
+            feature_vector.append(app_to_idx.get(app_name, -1))
 
             features.append(feature_vector)
 
