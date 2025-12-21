@@ -1,0 +1,33 @@
+{
+  "name": "automation-bot-framework",
+  "version": "1.0.0",
+  "description": "Automation bot framework with monitoring, action-replay, AI-driven accelerations, and testing",
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "start:backend": "cd backend && npm start",
+    "start:frontend": "cd frontend && npm start",
+    "test:backend": "cd backend && npm test",
+    "test:frontend": "cd frontend && npm test",
+    "test": "npm run test:backend && npm run test:frontend",
+    "build": "cd frontend && npm run build",
+    "deploy": "echo 'Deployment script placeholder'",
+    "demo": "node demo.js"
+  },
+  "keywords": [
+    "automation",
+    "bot",
+    "monitoring",
+    "action-replay",
+    "ai",
+    "testing"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/F33DoT530i/automation-bot-framework"
+  },
+  "devDependencies": {
+    "axios": "^1.13.2"
+  }
+}
