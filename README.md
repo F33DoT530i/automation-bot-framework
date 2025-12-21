@@ -80,6 +80,23 @@ npm start
 
 The frontend will be available at `http://localhost:3000`
 
+### Running the Demo
+
+To see all features in action:
+
+1. Start the backend server:
+   ```bash
+   cd backend
+   npm start
+   ```
+
+2. In a new terminal, run the demo:
+   ```bash
+   npm run demo
+   ```
+
+This will demonstrate monitoring, action replay, and AI-driven accelerations features.
+
 ## 📡 API Endpoints
 
 ### Monitoring API (`/api/monitoring`)
