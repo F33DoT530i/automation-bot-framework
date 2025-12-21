@@ -1,0 +1,27 @@
+{
+  "recorder": {
+    "enabled": false,
+    "outputDir": "./logs",
+    "format": "json",
+    "captureScreenshots": true,
+    "captureProcesses": true,
+    "screenshotInterval": 1000,
+    "processInterval": 500
+  },
+  "replay": {
+    "enabled": false,
+    "previewMode": true,
+    "speed": 1.0,
+    "pauseOnError": true
+  },
+  "legal": {
+    "requireAcknowledgment": true,
+    "showDisclaimerOnStart": true,
+    "logDisclaimerAcceptance": true
+  },
+  "logging": {
+    "level": "info",
+    "includeTimestamps": true,
+    "includeMetadata": true
+  }
+}

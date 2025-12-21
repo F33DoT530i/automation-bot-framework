@@ -19,9 +19,6 @@
   "author": "F33DoT530i",
   "license": "Unlicense",
   "dependencies": {
-    "screenshot-desktop": "^1.12.7",
-    "robotjs": "^0.6.0",
-    "node-process-list": "^2.0.0"
   },
   "devDependencies": {
     "jest": "^29.0.0",
