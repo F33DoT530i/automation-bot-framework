@@ -58,10 +58,12 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// Start server
-app.listen(PORT, () => {
-  logger.info(`Automation Bot Framework API listening on port ${PORT}`);
-  logger.info('Features: Monitoring, Action Replay, AI-driven Accelerations, Testing');
-});
+// Start server only if this file is run directly, not when imported
+if (require.main === module) {
+  app.listen(PORT, () => {
+    logger.info(`Automation Bot Framework API listening on port ${PORT}`);
+    logger.info('Features: Monitoring, Action Replay, AI-driven Accelerations, Testing');
+  });
+}
 
 module.exports = app;
