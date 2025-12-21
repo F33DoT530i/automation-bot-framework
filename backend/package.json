@@ -18,8 +18,7 @@
   ],
   "author": "F33DoT530i",
   "license": "Unlicense",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "jest": "^29.0.0",
     "eslint": "^8.0.0"

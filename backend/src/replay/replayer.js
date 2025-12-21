@@ -67,7 +67,7 @@ class ActionReplayer {
     }
 
     console.log('\nLegal Notice:');
-    console.log(`  ${session.legal.legal_notice}`);
+    console.log(`  ${session.legal?.legal_notice || 'N/A'}`);
     console.log('═'.repeat(60));
     console.log();
 
