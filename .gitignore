@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Recorded interaction data (for development)
+recorded_data/*.json
+!recorded_data/.gitkeep
+
+# ML Models
+models/*.pkl
+models/*.h5
+models/*.pth
+!models/.gitkeep
+
+# Node (for any frontend dependencies)
+node_modules/
+package-lock.json
