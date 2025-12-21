@@ -1,0 +1,30 @@
+{
+  "name": "automation-bot-framework",
+  "version": "1.0.0",
+  "description": "AI-assisted automation framework with screen recording and process logging",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "jest",
+    "test:unit": "jest --testPathPattern=tests/unit",
+    "test:integration": "jest --testPathPattern=tests/integration",
+    "lint": "eslint src/**/*.js"
+  },
+  "keywords": [
+    "automation",
+    "screen-recording",
+    "process-logging",
+    "ai-assistant"
+  ],
+  "author": "F33DoT530i",
+  "license": "Unlicense",
+  "dependencies": {
+    "screenshot-desktop": "^1.12.7",
+    "robotjs": "^0.6.0",
+    "node-process-list": "^2.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "eslint": "^8.0.0"
+  }
+}
