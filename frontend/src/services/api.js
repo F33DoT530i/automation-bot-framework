@@ -10,8 +10,8 @@ export const monitoringAPI = {
 };
 
 export const actionReplayAPI = {
-  startRecording: (sessionId) => 
-    axios.post(`${API_BASE_URL}/action-replay/start`, { sessionId }),
+  startRecording: (sessionId = null) => 
+    axios.post(`${API_BASE_URL}/action-replay/start`, sessionId ? { sessionId } : {}),
   recordStep: (sessionId, action) => 
     axios.post(`${API_BASE_URL}/action-replay/record/${sessionId}`, action),
   stopRecording: (sessionId) => 
