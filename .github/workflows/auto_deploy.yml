@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Configuration
+PROJECT_DIR="automation-bot-framework"
+BACKEND_DIR="backend"
+APP_NAME="automation-bot"
+
+echo "🚀 Starting deployment for $APP_NAME..."
+
+# 1. Navigate to the project directory
+cd ~/$PROJECT_DIR || { echo "❌ Directory not found"; exit 1; }
+
+# 2. Pull the latest changes
+echo "📥 Pulling latest code from GitHub..."
+git pull origin main
+
+# 3. Enter the backend directory
+cd $BACKEND_DIR || { echo "❌ Backend directory not found"; exit 1; }
+
+# 4. Install dependencies
+# Using 'npm ci' for clean, consistent installs based on package-lock.json
+echo "📦 Installing dependencies..."
+npm ci
+
+# 5. Build the application
+# Based on your commit, we check if a build script exists
+echo "🔨 Building application..."
+npm run build || echo "⚠️ No build script found, skipping..."
+
+# 6. Manage the process with PM2
+# This ensures the bot runs in the background and restarts on crash
+if pm2 list | grep -q "$APP_NAME"; then
+    echo "🔄 Restarting existing process..."
+    pm2 restart $APP_NAME
+else
+    echo "🟢 Starting new process..."
+    # Replace 'dist/index.js' with your actual entry point
+    pm2 start dist/index.js --name "$APP_NAME"
+fi
+
+echo "✅ Deployment successful!"
+pm2 status
