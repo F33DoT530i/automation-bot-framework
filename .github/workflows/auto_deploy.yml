@@ -1,42 +1,76 @@
-#!/bin/bash
+name: Auto Deploy to Server
 
-# Configuration
-PROJECT_DIR="automation-bot-framework"
-BACKEND_DIR="backend"
-APP_NAME="automation-bot"
+# This workflow is designed for deployment to a self-hosted server
+# It uses the deploy.sh script to manage the deployment process
+# For GitHub Actions deployment, see deployment.yml
 
-echo "🚀 Starting deployment for $APP_NAME..."
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - 'deploy.sh'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
 
-# 1. Navigate to the project directory
-cd ~/$PROJECT_DIR || { echo "❌ Directory not found"; exit 1; }
-
-# 2. Pull the latest changes
-echo "📥 Pulling latest code from GitHub..."
-git pull origin main
-
-# 3. Enter the backend directory
-cd $BACKEND_DIR || { echo "❌ Backend directory not found"; exit 1; }
-
-# 4. Install dependencies
-# Using 'npm ci' for clean, consistent installs based on package-lock.json
-echo "📦 Installing dependencies..."
-npm ci
-
-# 5. Build the application
-# Based on your commit, we check if a build script exists
-echo "🔨 Building application..."
-npm run build || echo "⚠️ No build script found, skipping..."
-
-# 6. Manage the process with PM2
-# This ensures the bot runs in the background and restarts on crash
-if pm2 list | grep -q "$APP_NAME"; then
-    echo "🔄 Restarting existing process..."
-    pm2 restart $APP_NAME
-else
-    echo "🟢 Starting new process..."
-    # Replace 'dist/index.js' with your actual entry point
-    pm2 start dist/index.js --name "$APP_NAME"
-fi
-
-echo "✅ Deployment successful!"
-pm2 status
+jobs:
+  deploy:
+    runs-on: self-hosted  # This requires a self-hosted runner
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+        
+    - name: Verify Node.js version
+      run: |
+        echo "Node version: $(node --version)"
+        echo "NPM version: $(npm --version)"
+        
+    - name: Check PM2 installation
+      run: |
+        if ! command -v pm2 &> /dev/null; then
+          echo "PM2 not found, installing..."
+          npm install -g pm2
+        else
+          echo "PM2 version: $(pm2 --version)"
+        fi
+        
+    - name: Run deployment script
+      run: |
+        chmod +x ./deploy.sh
+        ./deploy.sh
+      env:
+        PROJECT_DIR: ${{ github.workspace }}
+        APP_NAME: automation-bot
+        ENTRY_POINT: src/index.js
+        
+    - name: Verify deployment
+      run: |
+        pm2 list
+        pm2 info automation-bot
+        
+    - name: Health check
+      run: |
+        # Wait for application to start
+        sleep 5
+        # Check if process is running
+        if pm2 list | grep -q "automation-bot.*online"; then
+          echo "✅ Application is running"
+        else
+          echo "❌ Application is not running"
+          exit 1
+        fi
