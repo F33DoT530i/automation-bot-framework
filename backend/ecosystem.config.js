@@ -23,9 +23,11 @@ module.exports = {
     },
     
     // Logging
-    error_file: './logs/pm2-error.log',
-    out_file: './logs/pm2-out.log',
-    log_file: './logs/pm2-combined.log',
+    // PM2 will create these files automatically
+    // Logs stored in PM2 default directory: ~/.pm2/logs/
+    error_file: '~/.pm2/logs/automation-bot-error.log',
+    out_file: '~/.pm2/logs/automation-bot-out.log',
+    log_file: '~/.pm2/logs/automation-bot-combined.log',
     time: true,
     merge_logs: true,
     

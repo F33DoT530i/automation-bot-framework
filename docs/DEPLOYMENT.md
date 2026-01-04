@@ -239,8 +239,8 @@ Configure PM2 to start on system boot:
 pm2 startup
 
 # Execute the command shown by PM2
-# Example (will be different on your system):
-# sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u username --hp /home/username
+# The command will look something like this (use YOUR actual output):
+# sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u $USER --hp $HOME
 
 # Save current process list
 pm2 save

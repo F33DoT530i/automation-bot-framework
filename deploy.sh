@@ -138,13 +138,7 @@ fi
 echo "💾 Saving PM2 configuration..."
 pm2 save || warn "Failed to save PM2 configuration"
 
-# 11. Setup PM2 to start on system boot (optional)
-if command_exists systemctl; then
-    echo "🔧 Setting up PM2 startup script..."
-    pm2 startup systemd -u "$USER" --hp "$HOME" || warn "Failed to setup PM2 startup"
-fi
-
-# 12. Display status
+# 11. Display status
 echo ""
 echo "📊 Deployment Status:"
 pm2 status
@@ -158,4 +152,9 @@ echo "  pm2 logs $APP_NAME   - View application logs"
 echo "  pm2 restart $APP_NAME - Restart application"
 echo "  pm2 stop $APP_NAME   - Stop application"
 echo "  pm2 delete $APP_NAME - Remove application from PM2"
+echo ""
+echo "To configure PM2 to start on system boot (requires sudo):"
+echo "  pm2 startup systemd -u \$USER --hp \$HOME"
+echo "  # Then run the command that PM2 displays"
+echo "  pm2 save"
 echo ""
