@@ -55,6 +55,8 @@ npm start -- --help
 
 ## Documentation
 
+- [Quick Start Guide](QUICKSTART.md)
+- [Deployment Guide](docs/DEPLOYMENT.md)
 - [Legal Disclaimer](docs/legal/DISCLAIMER.md)
 - [Usage Guidelines](docs/legal/USAGE_GUIDELINES.md)
 - [API Documentation](docs/API.md)
