@@ -26,6 +26,9 @@ jobs:
   deploy:
     runs-on: self-hosted  # This requires a self-hosted runner
     
+    permissions:
+      contents: read  # Only need read access to checkout code
+    
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
