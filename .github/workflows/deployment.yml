@@ -6,9 +6,15 @@ on:
       - main
   workflow_dispatch:
 
+# Ensure only one deployment runs at a time
+concurrency:
+  group: deployment-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
     - name: Checkout repository
@@ -18,9 +24,17 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 18
+        cache: 'npm'
+        cache-dependency-path: ./backend/package-lock.json
 
     - name: Verify Node.js version
       run: |
+        echo "### Environment Information 🔧" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Node version**: $(node --version)" >> $GITHUB_STEP_SUMMARY
+        echo "- **NPM version**: $(npm --version)" >> $GITHUB_STEP_SUMMARY
+        echo "- **Runner OS**: ${{ runner.os }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
         echo "Node version: $(node --version)"
         echo "NPM version: $(npm --version)"
 
@@ -29,29 +43,38 @@ jobs:
       run: |
         echo "Checking package.json and package-lock.json compatibility..."
         if [ ! -f package.json ]; then
+          echo "❌ Error: package.json not found" >> $GITHUB_STEP_SUMMARY
           echo "Error: package.json not found"
           exit 1
         fi
         if [ ! -f package-lock.json ]; then
+          echo "❌ Error: package-lock.json not found" >> $GITHUB_STEP_SUMMARY
           echo "Error: package-lock.json not found"
           exit 1
         fi
+        echo "✅ Package files validated successfully" >> $GITHUB_STEP_SUMMARY
         echo "Package files validated successfully"
 
     - name: Run npm audit
       working-directory: ./backend
-      run: npm audit --audit-level=moderate
+      run: |
+        echo "### Security Audit 🔒" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        npm audit --audit-level=moderate || echo "⚠️ Security vulnerabilities detected (non-blocking)" >> $GITHUB_STEP_SUMMARY
       continue-on-error: true
 
     - name: Install dependencies
       working-directory: ./backend
-      run: npm ci
+      run: |
+        echo "Installing dependencies..."
+        npm ci
+        echo "✅ Dependencies installed successfully" >> $GITHUB_STEP_SUMMARY
 
     - name: Save npm debug log on failure
       if: failure()
       uses: actions/upload-artifact@v3
       with:
-        name: npm-debug-logs
+        name: npm-debug-logs-${{ github.run_number }}
         path: |
           ~/.npm/_logs/*.log
           **/npm-debug.log*
@@ -59,8 +82,52 @@ jobs:
 
     - name: Build application
       working-directory: ./backend
-      run: npm run build --if-present
+      timeout-minutes: 10
+      run: |
+        echo "### Build Status 🏗️" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if npm run build --if-present; then
+          echo "✅ Build completed successfully" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ Build failed" >> $GITHUB_STEP_SUMMARY
+          exit 1
+        fi
+
+    - name: Upload build artifacts
+      if: success()
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts-${{ github.run_number }}
+        path: |
+          backend/dist/
+          backend/build/
+        if-no-files-found: ignore
 
     - name: Deploy application
       working-directory: ./backend
-      run: npm run deploy --if-present
+      timeout-minutes: 10
+      run: |
+        echo "### Deployment Status 🚀" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        if npm run deploy --if-present; then
+          echo "✅ Deployment completed successfully" >> $GITHUB_STEP_SUMMARY
+          echo "- **Deployed at**: $(date -u)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ Deployment failed" >> $GITHUB_STEP_SUMMARY
+          exit 1
+        fi
+
+    - name: Deployment Summary
+      if: always()
+      run: |
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "---" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Workflow Run**: #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Triggered by**: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
+        if [ "${{ job.status }}" == "success" ]; then
+          echo "**Status**: ✅ Success" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "**Status**: ❌ Failed" >> $GITHUB_STEP_SUMMARY
+        fi
