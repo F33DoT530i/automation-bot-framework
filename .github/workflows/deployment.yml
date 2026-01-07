@@ -60,7 +60,12 @@ jobs:
       run: |
         echo "### Security Audit 🔒" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        npm audit --audit-level=moderate || echo "⚠️ Security vulnerabilities detected (non-blocking)" >> $GITHUB_STEP_SUMMARY
+        if npm audit --audit-level=moderate; then
+          echo "✅ No security vulnerabilities detected" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "⚠️ Security vulnerabilities detected (non-blocking)" >> $GITHUB_STEP_SUMMARY
+          echo "⚠️ Security vulnerabilities detected (non-blocking)"
+        fi
       continue-on-error: true
 
     - name: Install dependencies
