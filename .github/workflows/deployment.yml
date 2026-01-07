@@ -126,8 +126,3 @@ jobs:
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "**Workflow Run**: #${{ github.run_number }}" >> $GITHUB_STEP_SUMMARY
         echo "**Triggered by**: ${{ github.actor }}" >> $GITHUB_STEP_SUMMARY
-        if [ "${{ job.status }}" == "success" ]; then
-          echo "**Status**: ✅ Success" >> $GITHUB_STEP_SUMMARY
-        else
-          echo "**Status**: ❌ Failed" >> $GITHUB_STEP_SUMMARY
-        fi
