@@ -36,6 +36,10 @@ A comprehensive framework for AI-assisted automation with screen recording and p
 - CLI help menus with legal warnings
 - Automatic disclaimer inclusion in logs
 
+## Live Demo
+
+Access the deployed application at: **https://automation-bot-framework-bfbf6df3.base44.app**
+
 ## Installation
 
 ```bash
