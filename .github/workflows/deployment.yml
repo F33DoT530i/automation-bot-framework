@@ -77,7 +77,7 @@ jobs:
 
     - name: Save npm debug log on failure
       if: failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: npm-debug-logs-${{ github.run_number }}
         path: |
@@ -100,7 +100,7 @@ jobs:
 
     - name: Upload build artifacts
       if: success()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: build-artifacts-${{ github.run_number }}
         path: |
